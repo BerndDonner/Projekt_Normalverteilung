@@ -2,6 +2,8 @@ import argparse
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('QtAgg')
 
 def command_line_arguments():
   parser = argparse.ArgumentParser(

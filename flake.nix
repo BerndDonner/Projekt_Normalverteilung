@@ -9,6 +9,9 @@
 #                          nix search nixpkgs
 # show nixos version:      nixos-version
 # 
+# pip3 freeze > requirements.txt
+#
+
 {
   description = "Schulprojekt Normalverteilung Environment for Nix 24.11";
 
@@ -32,17 +35,28 @@
         name = "impurePythonEnv";
         venvDir = "./.venv";
 
-        buildInputs = (with pkgs; [
-          python3Packages.python
-          python3Packages.venvShellHook
+        buildInputs = (with pkgs.python3Packages; [
+          python
+          venvShellHook
+          numpy
+          pandas
+          matplotlib
+          pyqt5
+        ]) ++ ([
+          pkgs.libsForQt5.qt5.qtwayland
         ]) ++ (with pkgsUnstable; [
-          python311Packages.pandas
-          python311Packages.matplotlib
         ]);
 
         postVenvCreation = ''
           unset SOURCE_DATE_EPOCH
           pip install -r requirements.txt
+        '';
+
+        # Now we can execute any commands within the virtual environment.
+        # This is optional and can be left out to run pip manually.
+        postShellHook = ''
+          # allow pip to install wheels
+          unset SOURCE_DATE_EPOCH
         '';
       };
   };
